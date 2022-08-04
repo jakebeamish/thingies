@@ -30,6 +30,8 @@ function draw() {
   }
 
   for (let i = 0; i < foods.length; i++) {
+    foods[i].edges();
+
     foods[i].degrade();
     foods[i].show();
   }
@@ -47,7 +49,6 @@ function draw() {
 
   }
 }
-
 ///////////////////////////////////////////////////
 
 function keyPressed() {
@@ -65,6 +66,13 @@ class Food {
     this.colour = random(20, 100);
     // this.colour = 'green';
     this.energy = this.size * 0.1;
+  }
+
+  edges() {
+    if (
+      this.position.x < 0 || this.position.x > width ||
+      this.position.y < 0 || this.position.y > height
+    ) {foods.splice(this, 1)}
   }
 
   degrade() {
