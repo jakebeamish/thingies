@@ -25,7 +25,7 @@ function draw() {
 
   if (cells.length == 0) cells.push(new Cell(width / 2, height / 2));
 
-  while (foods.length < foodAmount) {
+  while (foods.length < foodAmount - cells.length * 10) {
     foods.push(new Food());
   }
 
