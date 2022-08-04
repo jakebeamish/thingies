@@ -7,10 +7,11 @@ let area;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  colorMode(HSB);
   area = width * height;
   foodAmount = foodDensity * area * 0.01;
   background(0);
-  margin = 0.1 * (windowWidth + windowHeight / 2);
+  margin = 0.05 * (windowWidth + windowHeight / 2);
 
   while (cells.length < startCells) {
     let x = Math.round(random(margin, width - margin));
@@ -20,7 +21,7 @@ function setup() {
 }
 
 function draw() {
-  background(0, 30);
+  background(0, 0.1);
 
   if (cells.length == 0) cells.push(new Cell(width / 2, height / 2));
 
@@ -28,21 +29,22 @@ function draw() {
     foods.push(new Food());
   }
 
-  for (let i = 0; i < cells.length; i++) {
-    cells[i].move();
-    if (cells.length < 20) cells[i].edges();
-    cells[i].show();
-    cells[i].eat();
-    cells[i].metabolism();
-    cells[i].grow();
-    cells[i].reproduce();
-    cells[i].age++;
-    cells[i].die();
-  }
-
   for (let i = 0; i < foods.length; i++) {
     foods[i].degrade();
     foods[i].show();
+  }
+
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].age++;
+    if (cells.length < 100) cells[i].edges();
+    cells[i].metabolism();
+    cells[i].grow();
+    cells[i].move();
+    cells[i].eat();
+    cells[i].reproduce();
+    cells[i].show();
+    cells[i].die();
+
   }
 }
 
@@ -60,7 +62,8 @@ class Food {
     else this.position = createVector(random(margin, width - margin), random(margin, height - margin));
     this.size = size || random(0.1, 5);
     this.radius = this.size * 0.5;
-    this.colour = random(20, 100);
+    // this.colour = random(20, 100);
+    this.colour = 'green';
     this.energy = this.size * 0.1;
   }
 
@@ -86,12 +89,12 @@ class Cell {
     this.velocity = createVector(0, 0);
     this.size = 3;
     this.radius = 0.5 * this.size;
-    this.alpha = 255;
+    this.alpha = 1;
     this.age = 0;
     this.lifespan = 1000;
     this.energy = 0.5;
     this.reproduceCost = 0.5;
-    this.moveCost = 0.003;
+    this.moveCost = 0.002;
     this.thinkCost = 0.0001;
 
 
@@ -111,6 +114,7 @@ class Cell {
     if (this.age > this.lifespan || this.energy < 0) {
       cells.splice(this, 1);
       foods.push(new Food(this.position.x, this.position.y, this.size));
+
     }
   }
 
@@ -125,22 +129,22 @@ class Cell {
   }
 
   reproduce() {
-    if (this.size > 20) {
+    if (this.size > 20 && this.energy > 0.8) {
       cells.push(new Cell(this.position.x, this.position.y));
       // cells.push(new Cell(this.position.x, this.position.y));
-      this.size = 10;
+      this.size -=5;
       this.energy -= this.reproduceCost;
     }
   }
 
   move() {
     this.wiggle = createVector(random(-1, 1), random(-1, 1));
-    this.wiggle.setMag(10);
+    this.wiggle.setMag(1);
     this.direction.add(this.wiggle);
     // this.direction.setHeading(random(PI));
     // this.direction.setMag(1);
     this.velocity.add(this.direction);
-    this.velocity.setMag(1);
+    this.velocity.setMag(random(2));
     this.position.add(this.velocity);
     this.energy -= this.moveCost * this.velocity.mag();
     this.velocity.mult(0);
@@ -161,7 +165,6 @@ class Cell {
       this.direction.y *= -1
     }
   }
-
 
   show() {
     noStroke();
