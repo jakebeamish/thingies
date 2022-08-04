@@ -1,78 +1,36 @@
 let cells = [];
 let foods = [];
-let foodAmount = 1000;
+let foodDensity = 0.2;
 let startCells = 1;
 let margin;
-let map;
-let noiseScale = 0.007;
+let area;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  noiseDetail(2, 0.4);
+  area = width * height;
+  foodAmount = foodDensity * area * 0.01;
   background(0);
-  margin = 0.0001 * (windowWidth + windowHeight / 2);
-
-  // createMap();
-  // drawMap();
-
-  // for (let i = 0; i < startCells; i++) {
-  //   let x = random(width);
-  //   let y = random(height);
-  //   if (map[x][y] < 100) cells.push(new Cell(x, y));
-  // }
+  margin = 0.1 * (windowWidth + windowHeight / 2);
 
   while (cells.length < startCells) {
     let x = Math.round(random(margin, width - margin));
     let y = Math.round(random(margin, height - margin));
-    // if (map[x][y] < 0.1) cells.push(new Cell(x, y));
-    cells.push(new Cell(width / 2, height / 2))
+    cells.push(new Cell(width / 2, height / 2));
   }
 }
-
-// function createMap() {
-//   map = [];
-//   for (let x = 0; x < width; x++) {
-//     map[x] = [];
-//     for (let y = 0; y < height; y++) {
-//       map[x][y] = topograph(x, y);
-//     }
-//   }
-// }
-//
-// function topograph(x, y) {
-//   let h = noise(x * noiseScale, y * noiseScale);
-//   let colour = 'red';
-//
-//   h = Math.round(h * 10) * 0.1;
-//   if (h < 0.3) h = 0;
-//
-//   return h;
-// }
-//
-//
-// function drawMap() {
-//   for (let x = 0; x < width; x++) {
-//     for (let y = 0; y < height; y++) {
-//       set(x, y, color(255 * map[x][y]));
-//     }
-//   }
-//   updatePixels();
-// }
 
 function draw() {
   background(0, 30);
 
-  if (cells.length == 0) cells.push(new Cell());
+  if (cells.length == 0) cells.push(new Cell(width / 2, height / 2));
 
   while (foods.length < foodAmount) {
     foods.push(new Food());
   }
 
-  // drawMap();
   for (let i = 0; i < cells.length; i++) {
     cells[i].move();
     if (cells.length < 20) cells[i].edges();
-    // cells[i].topoLimit();
     cells[i].show();
     cells[i].eat();
     cells[i].reproduce();
@@ -88,13 +46,6 @@ function draw() {
 
   }
 }
-
-// function mousePressed() {
-//   if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
-//     let fs = fullscreen();
-//     fullscreen(!fs);
-//   }
-// }
 
 function keyPressed() {
   if (keyCode === UP_ARROW) {
@@ -186,14 +137,6 @@ class Cell {
     this.position.add(this.velocity);
     this.velocity.mult(0);
   }
-  // topoLimit() {
-  //   let x = constrain(Math.round(this.position.x), 0, width);
-  //   let y = constrain(Math.round(this.position.y), 0, height);
-  //   if (map[x][y] > 50) {
-  //     this.direction.mult(-1);
-  //   }
-  // console.log(Math.round(this.position.x), Math.round(this.position.y));
-  // }
 
   edges() {
     if (
