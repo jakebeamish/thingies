@@ -62,8 +62,8 @@ class Food {
     else this.position = createVector(random(margin, width - margin), random(margin, height - margin));
     this.size = size || random(0.1, 5);
     this.radius = this.size * 0.5;
-    // this.colour = random(20, 100);
-    this.colour = 'green';
+    this.colour = random(20, 100);
+    // this.colour = 'green';
     this.energy = this.size * 0.1;
   }
 
