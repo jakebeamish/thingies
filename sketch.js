@@ -30,10 +30,9 @@ function draw() {
   }
 
   for (let i = 0; i < foods.length; i++) {
-    foods[i].edges();
-
     foods[i].degrade();
     foods[i].show();
+    foods[i].edges();
   }
 
   for (let i = 0; i < cells.length; i++) {
